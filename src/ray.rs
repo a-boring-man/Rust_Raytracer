@@ -5,6 +5,7 @@ use crate::vec3::Vec3;
 type Point = Vec3;
 
 /* The Ray class */
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Ray {
     origin: Point,
     direction: Vec3,
@@ -27,7 +28,7 @@ impl Ray {
      **********************/
 
     pub fn at(&self, t: f64) -> Point {
-        self.origin + self.direction.mult(t)
+        self.origin + self.direction * t
     }
 
     /**********************
@@ -42,6 +43,32 @@ impl Ray {
     /* Return the direction of the ray */
     pub fn dir(&self) -> Vec3 {
         self.direction
+    }
+
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_ray_construction() {
+        assert_eq!(Ray::new(Vec3::new(42.0, 21.4, 4.5), Vec3::new(52.0, 24.4, 4.53)), Ray {origin: Vec3::new(42.0, 21.4, 4.5), direction: Vec3::new(52.0, 24.4, 4.53)});
+    }
+
+    #[test]
+    fn test_ray_at() {
+        assert_eq!(Ray::new(Vec3::new(1.0, 1.0, 1.0), Vec3::new(1.0, 1.0, 1.0)).at(0.5), Vec3::new(1.5, 1.5, 1.5));
+    }
+
+    #[test]
+    fn test_ray_getter_origin() {
+        assert_eq!(Ray::new(Vec3::new(6.0, 1.530, 1.12), Vec3::new(1.45, 22.0, 1.7)).origin(), Vec3::new(6.0, 1.530, 1.12));
+    }
+
+    #[test]
+    fn test_ray_getter_direction() {
+        assert_eq!(Ray::new(Vec3::new(6.0, 1.530, 1.12), Vec3::new(1.45, 22.0, 1.7)).dir(),  Vec3::new(1.45, 22.0, 1.7));
     }
 
 }
