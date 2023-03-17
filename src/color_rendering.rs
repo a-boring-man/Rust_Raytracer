@@ -7,8 +7,8 @@ type Color = Vec3;
 /* Write the translated [0, 255] value of each color component */
 pub fn write_color(pixel_color: Color) {
     println!("{} {} {}",    255.999 * pixel_color.x(),
-                            255.999 * pixel_color.x(),
-                            255.999 * pixel_color.x());
+                            255.999 * pixel_color.y(),
+                            255.999 * pixel_color.z());
 }
 
 /* Responsible for calculating each pixel color and arranging them in a ppm format */
