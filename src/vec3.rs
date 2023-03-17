@@ -107,6 +107,21 @@ impl Vec3 {
         self.e[2]
     }
 
+    /* Color version */
+
+    /* Return the first vector component */
+    pub fn r(&self) -> f64 {
+        self.e[0]
+    }
+    /* Return the second vector component */
+    pub fn g(&self) -> f64 {
+        self.e[1]
+    }
+    /* Return the third vector component */
+    pub fn b(&self) -> f64 {
+        self.e[2]
+    }
+
 }
 
 #[cfg(test)]
@@ -171,6 +186,21 @@ mod test {
     #[test]
     fn test_vec_getter_z() {
         assert_eq!(Vec3::new(3.0, 4.0, 0.0).z(), 0.0);
+    }
+
+    #[test]
+    fn test_vec_getter_r() {
+        assert_eq!(Vec3::new(3.0, 4.0, 0.0).r(), 3.0);
+    }
+
+    #[test]
+    fn test_vec_getter_g() {
+        assert_eq!(Vec3::new(3.0, 4.0, 0.0).g(), 4.0);
+    }
+
+    #[test]
+    fn test_vec_getter_b() {
+        assert_eq!(Vec3::new(3.0, 4.0, 0.0).b(), 0.0);
     }
 
 }
