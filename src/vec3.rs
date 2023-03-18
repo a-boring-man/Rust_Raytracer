@@ -1,7 +1,7 @@
 use std::ops;
 
 /* The 3D vector class */
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Vec3 {
     pub e: [f64;3]
 }
@@ -18,10 +18,24 @@ impl ops::Add for Vec3 {
         Vec3 { e: [ self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z() ] }
     }
 }
+impl<'a> ops::Add<&'a Vec3> for &'a Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Vec3 { e: [ self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z() ] }
+    }
+}
 
 /* Implement the - operator for Vec3 */
 impl ops::Sub for Vec3 {
     type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Vec3 { e: [ self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z() ] }
+    }
+}
+impl<'a> ops::Sub<&'a Vec3> for &'a Vec3 {
+    type Output = Vec3;
 
     fn sub(self, rhs: Self) -> Self::Output {
         Vec3 { e: [ self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z() ] }
@@ -36,11 +50,25 @@ impl ops::Mul for Vec3 {
         Vec3 { e: [ self.x() * rhs.x(), self.y() * rhs.y(), self.z() * rhs.z() ] }
     }
 }
+impl<'a> ops::Mul<&'a Vec3> for &'a Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Vec3 { e: [ self.x() * rhs.x(), self.y() * rhs.y(), self.z() * rhs.z() ] }
+    }
+}
 impl ops::Mul<f64> for Vec3 {
     type Output = Self;
 
     fn mul(self, rhs: f64) -> Self::Output {
         Vec3 { e: [self.x() * rhs, self.y() * rhs, self.z() * rhs] }
+    }
+}
+impl<'a> ops::Mul<f64> for &'a Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Vec3 { e: [ self.x() * rhs, self.y() * rhs, self.z() * rhs ] }
     }
 }
 
@@ -57,6 +85,14 @@ impl ops::Div<f64> for Vec3 {
 
     fn div(self, rhs: f64) -> Self::Output {
         let k: f64 = 1.0/rhs;
+        Vec3 { e: [self.x() * k, self.y() * k, self.z() * k] }
+    }
+}
+impl<'a> ops::Div<f64> for &'a Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        let k = 1.0 / rhs;
         Vec3 { e: [self.x() * k, self.y() * k, self.z() * k] }
     }
 }
@@ -80,7 +116,7 @@ impl Vec3 {
 
     /* Static Methode */
 
-    pub fn unit_vec(v: Vec3) -> Vec3 {
+    pub fn unit_vec(v: &Vec3) -> Vec3 {
         v / v.length()
     }
     
@@ -165,7 +201,7 @@ mod test {
 
     #[test]
     fn test_vec_unit_vec() {
-        assert_eq!(Vec3::unit_vec(Vec3::new(42.0, 42.0, -42.0)), Vec3::new(0.5773502691896257, 0.5773502691896257, -0.5773502691896257));
+        assert_eq!(Vec3::unit_vec(&Vec3::new(42.0, 42.0, -42.0)), Vec3::new(0.5773502691896257, 0.5773502691896257, -0.5773502691896257));
     }
 
     #[test]

@@ -5,7 +5,7 @@ use crate::vec3::Vec3;
 type Point = Vec3;
 
 /* The Ray class */
-#[derive(PartialEq, Debug, Clone, Copy)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct Ray {
     origin: Point,
     direction: Vec3,
@@ -28,7 +28,7 @@ impl Ray {
      **********************/
 
     pub fn at(&self, t: f64) -> Point {
-        self.origin + self.direction * t
+        &self.origin + &(&self.direction * t)
     }
 
     /**********************
@@ -37,12 +37,12 @@ impl Ray {
 
     /* Return the origin of the ray */
     pub fn origin(&self) -> Point {
-        self.origin
+        self.origin.clone()
     }
 
     /* Return the direction of the ray */
     pub fn dir(&self) -> Vec3 {
-        self.direction
+        self.direction.clone()
     }
 
 }
