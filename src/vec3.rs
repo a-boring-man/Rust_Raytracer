@@ -80,6 +80,13 @@ impl ops::Div for Vec3 {
         Vec3 { e: [ self.x() / rhs.x(), self.y() / rhs.y(), self.z() / rhs.z() ] }
     }
 }
+impl<'a> ops::Div<&'a Vec3> for &'a Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        Vec3 { e: [ self.x() / rhs.x(), self.y() / rhs.y(), self.z() / rhs.z() ] }
+    }
+}
 impl ops::Div<f64> for Vec3 {
     type Output = Self;
 
@@ -175,8 +182,18 @@ mod test {
     }
 
     #[test]
+    fn test_vec_addr() {
+        assert_eq!(&Vec3::new(1.0, 2.0, 3.0) + &Vec3::new(4.0, 6.0, 8.7), Vec3::new(5.0, 8.0, 11.7));
+    }
+
+    #[test]
     fn test_vec_sub() {
         assert_eq!(Vec3::new(1.0, 2.0, 3.0) - Vec3::new(4.0, 6.0, 8.0), Vec3::new(-3.0, -4.0, -5.0));
+    }
+
+    #[test]
+    fn test_vec_subr() {
+        assert_eq!(&Vec3::new(1.0, 2.0, 3.0) - &Vec3::new(4.0, 6.0, 8.0), Vec3::new(-3.0, -4.0, -5.0));
     }
 
     #[test]
@@ -185,8 +202,18 @@ mod test {
     }
 
     #[test]
+    fn test_vec_mul1r() {
+        assert_eq!(&Vec3::new(1.0, 2.0, 3.0) * &Vec3::new(4.0, 6.0, 8.0), Vec3::new(4.0, 12.0, 24.0));
+    }
+
+    #[test]
     fn test_vec_mul2() {
         assert_eq!(Vec3::new(1.0, 2.0, 3.0) * 3.0, Vec3::new(3.0, 6.0, 9.0));
+    }
+
+    #[test]
+    fn test_vec_mul2r() {
+        assert_eq!(&Vec3::new(1.0, 2.0, 3.0) * 3.0, Vec3::new(3.0, 6.0, 9.0));
     }
 
     #[test]
@@ -195,8 +222,18 @@ mod test {
     }
 
     #[test]
+    fn test_vec_div1r() {
+        assert_eq!(&Vec3::new(1.0, 6.0, 7.5) / &Vec3::new(4.0, 2.0, 3.0), Vec3::new(0.25, 3.0, 2.5));
+    }
+
+    #[test]
     fn test_vec_div2() {
         assert_eq!(Vec3::new(42.0, 2.0, 3.0) / 2.0, Vec3::new(21.0, 1.0, 1.5));
+    }
+
+    #[test]
+    fn test_vec_div2r() {
+        assert_eq!(&Vec3::new(42.0, 2.0, 3.0) / 2.0, Vec3::new(21.0, 1.0, 1.5));
     }
 
     #[test]
