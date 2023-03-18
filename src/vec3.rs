@@ -3,7 +3,7 @@ use std::ops;
 /* The 3D vector class */
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec3 {
-    e: [f64;3]
+    pub e: [f64;3]
 }
 
 /**********************
