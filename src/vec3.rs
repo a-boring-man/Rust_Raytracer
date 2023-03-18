@@ -1,9 +1,13 @@
-use std::ops;
+use std::ops::{self, DivAssign};
 
 /* The 3D vector class */
 #[derive(Clone, Debug, PartialEq)]
 pub struct Vec3 {
     pub e: [f64;3]
+}
+
+pub fn sqr(n: f64) -> f64 {
+    n * n
 }
 
 /**********************
@@ -103,7 +107,13 @@ impl<'a> ops::Div<f64> for &'a Vec3 {
         Vec3 { e: [self.x() * k, self.y() * k, self.z() * k] }
     }
 }
-
+impl<'a> DivAssign<f64> for &'a mut Vec3 {
+    fn div_assign(&mut self, rhs: f64) {
+        self.e[0] /= rhs;
+        self.e[1] /= rhs;
+        self.e[2] /= rhs;
+    }
+}
 
 /* Implement basic function for the vector struct */
 impl Vec3 {
@@ -129,8 +139,16 @@ impl Vec3 {
     
     /* Instance Methode */
 
+    pub fn length2(&self) -> f64 {
+        sqr(self.x()) + sqr(self.y()) + sqr(self.z())
+    }
+
     pub fn length(&self) -> f64 {
-        (self.x() * self.x() + self.y() * self.y() + self.z() * self.z()).sqrt()
+        self.length2().sqrt()
+    }
+
+    pub fn normalize(&mut self) {
+        self /= self.length();
     }
 
     /**********************
@@ -239,6 +257,13 @@ mod test {
     #[test]
     fn test_vec_unit_vec() {
         assert_eq!(Vec3::unit_vec(&Vec3::new(42.0, 42.0, -42.0)), Vec3::new(0.5773502691896257, 0.5773502691896257, -0.5773502691896257));
+    }
+
+    #[test]
+    fn test_vec_normalize() {
+        let mut salut: Vec3 = Vec3::new(42.0, 42.0, -42.0);
+        salut.normalize();
+        assert_eq!(salut, Vec3::new(0.5773502691896257, 0.5773502691896257, -0.5773502691896257));
     }
 
     #[test]

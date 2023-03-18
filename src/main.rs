@@ -62,13 +62,14 @@ fn main() {
             }
         }
         for j in 0..IMAGE_HEIGHT {
-            eprintln!("\rlines done: {} ", j);
+            //eprintln!("\rlines done: {} ", j);
+            let v: f64 = (1.0 - j as f64 / (IMAGE_HEIGHT - 1) as f64) as f64;
+            let vertical_factor = &vertical * 2.0 * v;
             for i in 0..IMAGE_WIDTH {
                 let u: f64 = i as f64 / (IMAGE_WIDTH - 1) as f64;
-                let v: f64 = (1.0 - j as f64 / (IMAGE_HEIGHT - 1) as f64) as f64;
-                let r: Ray = Ray::new(origin.clone(), &(&(&lower_left_corner + &(&horizontal * 2.0 * u)) + &(&vertical * 2.0 * v)) - &origin);
+                let r: Ray = Ray::new(origin.clone(), &(&(&lower_left_corner + &(&horizontal * 2.0 * u)) + &vertical_factor) - &origin);
                 let pixel_color = ray_color(&r);
-                if i == 0 {
+                if i == 0 && j == 0 {
                     println!("{:?}", r);
                 }
 
