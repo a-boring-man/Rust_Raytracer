@@ -68,7 +68,7 @@ fn main() {
             let vertical_factor = &vertical * v;
             for i in 0..IMAGE_WIDTH {
                 let u: f64 = (i as f64 * INV_IMAGE_WIDTH_1 - 0.5) * 2.0;
-                let r: Ray = Ray::new(origin.clone(), &(&(&horizontal  * u) + &(&vertical_factor + &depth)) - &origin);
+                let r: Ray = Ray::new(origin.clone(), &horizontal * u + &vertical_factor + &depth - &origin);
                 let pixel_color = ray_color(&r);
                 if i == 0 {
                     println!("{:?}", r);

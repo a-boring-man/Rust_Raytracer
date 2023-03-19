@@ -29,6 +29,20 @@ impl<'a> ops::Add<&'a Vec3> for &'a Vec3 {
         Vec3 { e: [ self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z() ] }
     }
 }
+impl ops::Add<& Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: & Vec3) -> Self::Output {
+        Vec3 { e: [ self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z() ] }
+    }
+}
+impl ops::Add<Vec3> for & Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Vec3) -> Self::Output {
+        Vec3 { e: [ self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z() ] }
+    }
+}
 
 /* Implement the - operator for Vec3 */
 impl ops::Sub for Vec3 {
@@ -42,6 +56,20 @@ impl<'a> ops::Sub<&'a Vec3> for &'a Vec3 {
     type Output = Vec3;
 
     fn sub(self, rhs: Self) -> Self::Output {
+        Vec3 { e: [ self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z() ] }
+    }
+}
+impl ops::Sub<& Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, rhs: & Vec3) -> Self::Output {
+        Vec3 { e: [ self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z() ] }
+    }
+}
+impl ops::Sub<Vec3> for & Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, rhs: Vec3) -> Self::Output {
         Vec3 { e: [ self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z() ] }
     }
 }
@@ -61,6 +89,21 @@ impl<'a> ops::Mul<&'a Vec3> for &'a Vec3 {
         Vec3 { e: [ self.x() * rhs.x(), self.y() * rhs.y(), self.z() * rhs.z() ] }
     }
 }
+impl ops::Mul<& Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: & Vec3) -> Self::Output {
+        Vec3 { e: [ self.x() * rhs.x(), self.y() * rhs.y(), self.z() * rhs.z() ] }
+    }
+}
+impl ops::Mul<Vec3> for & Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 { e: [ self.x() * rhs.x(), self.y() * rhs.y(), self.z() * rhs.z() ] }
+    }
+}
+
 impl ops::Mul<f64> for Vec3 {
     type Output = Self;
 
@@ -68,21 +111,29 @@ impl ops::Mul<f64> for Vec3 {
         Vec3 { e: [self.x() * rhs, self.y() * rhs, self.z() * rhs] }
     }
 }
-impl<'a> ops::Mul<f64> for &'a Vec3 {
+impl ops::Mul<f64> for & Vec3 {
     type Output = Vec3;
 
     fn mul(self, rhs: f64) -> Self::Output {
         Vec3 { e: [ self.x() * rhs, self.y() * rhs, self.z() * rhs ] }
     }
 }
-impl<'a> ops::Mul<f64> for &'a mut Vec3 {
+impl ops::Mul<Vec3> for f64 {
     type Output = Vec3;
 
-    fn mul(self, rhs: f64) -> Self::Output {
-        Vec3 { e: [ self.x() * rhs, self.y() * rhs, self.z() * rhs ] }.clone()
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 { e: [ self * rhs.x(), self * rhs.y(), self * rhs.z() ] }
     }
 }
-impl<'a> MulAssign<f64> for &'a mut Vec3 {
+impl ops::Mul<& Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: & Vec3) -> Self::Output {
+        Vec3 { e: [ self * rhs.x(), self * rhs.y(), self * rhs.z() ] }
+    }
+}
+
+impl MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, rhs: f64) {
         self.e[0] *= rhs;
         self.e[1] *= rhs;
@@ -105,6 +156,21 @@ impl<'a> ops::Div<&'a Vec3> for &'a Vec3 {
         Vec3 { e: [ self.x() / rhs.x(), self.y() / rhs.y(), self.z() / rhs.z() ] }
     }
 }
+impl ops::Div<& Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: & Vec3) -> Self::Output {
+        Vec3 { e: [ self.x() / rhs.x(), self.y() / rhs.y(), self.z() / rhs.z() ] }
+    }
+}
+impl ops::Div<Vec3> for & Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: Vec3) -> Self::Output {
+        Vec3 { e: [ self.x() / rhs.x(), self.y() / rhs.y(), self.z() / rhs.z() ] }
+    }
+}
+
 impl ops::Div<f64> for Vec3 {
     type Output = Self;
 
@@ -113,7 +179,7 @@ impl ops::Div<f64> for Vec3 {
         Vec3 { e: [self.x() * k, self.y() * k, self.z() * k] }
     }
 }
-impl<'a> ops::Div<f64> for &'a Vec3 {
+impl ops::Div<f64> for & Vec3 {
     type Output = Vec3;
 
     fn div(self, rhs: f64) -> Self::Output {
@@ -121,12 +187,13 @@ impl<'a> ops::Div<f64> for &'a Vec3 {
         Vec3 { e: [self.x() * k, self.y() * k, self.z() * k] }
     }
 }
-impl<'a> DivAssign<f64> for &'a mut Vec3 {
+
+impl DivAssign<f64> for Vec3 {
     fn div_assign(&mut self, rhs: f64) {
-        let l = 1.0 / rhs;
-        self.e[0] /= rhs;
-        self.e[1] /= rhs;
-        self.e[2] /= rhs;
+        let l: f64 = 1.0 / rhs;
+        self.e[0] *= l;
+        self.e[1] *= l;
+        self.e[2] *= l;
     }
 }
 
@@ -163,8 +230,8 @@ impl Vec3 {
     }
 
     pub fn normalize(&mut self) {
-        let l = 1.0 / self.length();
-        *self = self.clone() * l;
+        let l: f64 = 1.0 / self.length();
+        *self *= l;
     }
 
     /**********************
@@ -216,8 +283,18 @@ mod test {
     }
 
     #[test]
-    fn test_vec_addr() {
+    fn test_vec_addrr() {
         assert_eq!(&Vec3::new(1.0, 2.0, 3.0) + &Vec3::new(4.0, 6.0, 8.7), Vec3::new(5.0, 8.0, 11.7));
+    }
+
+    #[test]
+    fn test_vec_addnr() {
+        assert_eq!(Vec3::new(1.0, 2.0, 3.0) + &Vec3::new(4.0, 6.0, 8.7), Vec3::new(5.0, 8.0, 11.7));
+    }
+
+    #[test]
+    fn test_vec_addrn() {
+        assert_eq!(&Vec3::new(1.0, 2.0, 3.0) + Vec3::new(4.0, 6.0, 8.7), Vec3::new(5.0, 8.0, 11.7));
     }
 
     #[test]
@@ -226,48 +303,102 @@ mod test {
     }
 
     #[test]
-    fn test_vec_subr() {
+    fn test_vec_subrr() {
         assert_eq!(&Vec3::new(1.0, 2.0, 3.0) - &Vec3::new(4.0, 6.0, 8.0), Vec3::new(-3.0, -4.0, -5.0));
     }
 
     #[test]
-    fn test_vec_mul1() {
+    fn test_vec_subnr() {
+        assert_eq!(Vec3::new(1.0, 2.0, 3.0) - &Vec3::new(4.0, 6.0, 8.0), Vec3::new(-3.0, -4.0, -5.0));
+    }
+
+    #[test]
+    fn test_vec_subrn() {
+        assert_eq!(&Vec3::new(1.0, 2.0, 3.0) - Vec3::new(4.0, 6.0, 8.0), Vec3::new(-3.0, -4.0, -5.0));
+    }
+
+    #[test]
+    fn test_vec_mul() {
         assert_eq!(Vec3::new(1.0, 2.0, 3.0) * Vec3::new(4.0, 6.0, 8.0), Vec3::new(4.0, 12.0, 24.0));
     }
 
     #[test]
-    fn test_vec_mul1r() {
+    fn test_vec_mulrr() {
         assert_eq!(&Vec3::new(1.0, 2.0, 3.0) * &Vec3::new(4.0, 6.0, 8.0), Vec3::new(4.0, 12.0, 24.0));
     }
 
     #[test]
-    fn test_vec_mul2() {
+    fn test_vec_mulnr() {
+        assert_eq!(Vec3::new(1.0, 2.0, 3.0) * &Vec3::new(4.0, 6.0, 8.0), Vec3::new(4.0, 12.0, 24.0));
+    }
+
+    #[test]
+    fn test_vec_mulrn() {
+        assert_eq!(&Vec3::new(1.0, 2.0, 3.0) * Vec3::new(4.0, 6.0, 8.0), Vec3::new(4.0, 12.0, 24.0));
+    }
+
+    #[test]
+    fn test_vec_mulvf() {
         assert_eq!(Vec3::new(1.0, 2.0, 3.0) * 3.0, Vec3::new(3.0, 6.0, 9.0));
     }
 
     #[test]
-    fn test_vec_mul2r() {
+    fn test_vec_mulfv() {
+        assert_eq!(3.0 * Vec3::new(1.0, 2.0, 3.0), Vec3::new(3.0, 6.0, 9.0));
+    }
+
+    #[test]
+    fn test_vec_mulrf() {
         assert_eq!(&Vec3::new(1.0, 2.0, 3.0) * 3.0, Vec3::new(3.0, 6.0, 9.0));
     }
 
     #[test]
-    fn test_vec_div1() {
+    fn test_vec_mulfr() {
+        assert_eq!(3.0 * &Vec3::new(1.0, 2.0, 3.0), Vec3::new(3.0, 6.0, 9.0));
+    }
+
+    #[test]
+    fn test_vec_mulsa() {
+        let mut v: Vec3 = Vec3::new(1.0, 2.0, 3.0);
+        v *= 3.0;
+        assert_eq!(v, Vec3::new(3.0, 6.0, 9.0));
+    }
+
+    #[test]
+    fn test_vec_div() {
         assert_eq!(Vec3::new(1.0, 6.0, 7.5) / Vec3::new(4.0, 2.0, 3.0), Vec3::new(0.25, 3.0, 2.5));
     }
 
     #[test]
-    fn test_vec_div1r() {
+    fn test_vec_divrr() {
         assert_eq!(&Vec3::new(1.0, 6.0, 7.5) / &Vec3::new(4.0, 2.0, 3.0), Vec3::new(0.25, 3.0, 2.5));
     }
 
     #[test]
-    fn test_vec_div2() {
+    fn test_vec_divnr() {
+        assert_eq!(Vec3::new(1.0, 6.0, 7.5) / &Vec3::new(4.0, 2.0, 3.0), Vec3::new(0.25, 3.0, 2.5));
+    }
+
+    #[test]
+    fn test_vec_divrn() {
+        assert_eq!(&Vec3::new(1.0, 6.0, 7.5) / Vec3::new(4.0, 2.0, 3.0), Vec3::new(0.25, 3.0, 2.5));
+    }
+
+    #[test]
+    fn test_vec_divf() {
         assert_eq!(Vec3::new(42.0, 2.0, 3.0) / 2.0, Vec3::new(21.0, 1.0, 1.5));
     }
 
     #[test]
-    fn test_vec_div2r() {
+    fn test_vec_divrf() {
         assert_eq!(&Vec3::new(42.0, 2.0, 3.0) / 2.0, Vec3::new(21.0, 1.0, 1.5));
+    }
+
+    #[test]
+    fn test_vec_divas() {
+        let mut v: Vec3 = Vec3::new(42.0, 2.0, 3.0);
+        v /= 2.0;
+        assert_eq!(v, Vec3::new(21.0, 1.0, 1.5));
     }
 
     #[test]
