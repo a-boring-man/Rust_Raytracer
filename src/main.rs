@@ -3,6 +3,8 @@ extern crate sdl2;
 mod vec3;
 mod color_rendering;
 mod ray;
+mod hittable;
+mod sphere;
 
 /* Shortcut */
 use vec3::Vec3;
