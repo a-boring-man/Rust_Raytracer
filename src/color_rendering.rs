@@ -9,14 +9,14 @@ type Point3 = Vec3;
 pub fn hit_sphere(sphere_center: &Point3, radius: f64, r: &Ray) -> f64 {
     let oc: Vec3 = r.origin() - sphere_center;
     let a: f64 = r.dir().length2();
-    let b: f64 = 2.0 * Vec3::dot(&oc, &r.dir());
+    let half_b: f64 = Vec3::dot(&oc, &r.dir());
     let c: f64 = oc.length2() - radius * radius;
-    let discriminant: f64 = b * b - 4.0 * a * c;
+    let discriminant: f64 = half_b * half_b - a * c;
     if discriminant < 0.0 {
         return -1.0;
     }
     else {
-        return (-b - discriminant.sqrt()) * 0.5 / a;
+        return (-half_b - discriminant.sqrt()) / a;
     }
 }
 
