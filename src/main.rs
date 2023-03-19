@@ -43,9 +43,9 @@ fn main() {
     /* Camera Initialization */
     let screen_distance: f64 = (VIEWPORT_WIDTH * 0.5) / (((FOV * 0.5) * PI / 180.0).tan());
     let origin: Point3 = Point3::new(0.0, 0.0, 0.0);
-    let horizontal: Vec3 = Vec3::new(VIEWPORT_WIDTH * 0.5, 0.0, 0.0);
+    let horizontal: Vec3 = Vec3::new(-VIEWPORT_WIDTH * 0.5, 0.0, 0.0);
     let vertical: Vec3 = Vec3::new(0.0, VIEWPORT_HEIGHT * 0.5, 0.0);
-    let depth: Vec3 = Vec3::new(0.0, 0.0, -screen_distance);
+    let depth: Vec3 = Vec3::new(0.0, 0.0, screen_distance);
     
     /* Window thing */
 
