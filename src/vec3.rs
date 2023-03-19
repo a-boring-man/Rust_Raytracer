@@ -1,4 +1,4 @@
-use std::ops::{self, DivAssign, MulAssign};
+use std::ops;
 
 /* The 3D vector class */
 #[derive(Clone, Debug, PartialEq)]
@@ -44,6 +44,21 @@ impl ops::Add<Vec3> for & Vec3 {
     }
 }
 
+impl ops::AddAssign<Vec3> for Vec3 {
+    fn add_assign(&mut self, rhs: Vec3) {
+        self.e[0] += rhs.x();
+        self.e[1] += rhs.y();
+        self.e[2] += rhs.z();
+    }
+}
+impl ops::AddAssign<&Vec3> for Vec3 {
+    fn add_assign(&mut self, rhs: &Vec3) {
+        self.e[0] += rhs.x();
+        self.e[1] += rhs.y();
+        self.e[2] += rhs.z();
+    }
+}
+
 /* Implement the - operator for Vec3 */
 impl ops::Sub for Vec3 {
     type Output = Self;
@@ -71,6 +86,21 @@ impl ops::Sub<Vec3> for & Vec3 {
 
     fn sub(self, rhs: Vec3) -> Self::Output {
         Vec3 { e: [ self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z() ] }
+    }
+}
+
+impl ops::SubAssign<Vec3> for Vec3 {
+    fn sub_assign(&mut self, rhs: Vec3) {
+        self.e[0] -= rhs.x();
+        self.e[1] -= rhs.y();
+        self.e[2] -= rhs.z();
+    }
+}
+impl ops::SubAssign<&Vec3> for Vec3 {
+    fn sub_assign(&mut self, rhs: &Vec3) {
+        self.e[0] -= rhs.x();
+        self.e[1] -= rhs.y();
+        self.e[2] -= rhs.z();
     }
 }
 
@@ -133,7 +163,7 @@ impl ops::Mul<& Vec3> for f64 {
     }
 }
 
-impl MulAssign<f64> for Vec3 {
+impl ops::MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, rhs: f64) {
         self.e[0] *= rhs;
         self.e[1] *= rhs;
@@ -188,7 +218,7 @@ impl ops::Div<f64> for & Vec3 {
     }
 }
 
-impl DivAssign<f64> for Vec3 {
+impl ops::DivAssign<f64> for Vec3 {
     fn div_assign(&mut self, rhs: f64) {
         let l: f64 = 1.0 / rhs;
         self.e[0] *= l;
@@ -229,9 +259,30 @@ impl Vec3 {
         self.length2().sqrt()
     }
 
-    pub fn normalize(&mut self) {
-        let l: f64 = 1.0 / self.length();
-        *self *= l;
+    pub fn normalize(&mut self) -> f64 {
+        let l: f64 = self.length();
+        *self /= l;
+        l
+    }
+
+    pub fn normalized(&self) -> Vec3 {
+        let mut v: Vec3 = self.clone();
+        v.normalize();
+        v
+    }
+
+    pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
+        v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()
+    }
+
+    pub fn cross(v1: &Vec3, v2: &Vec3) -> Vec3 {
+        Vec3::new(  v1.y() * v2.z() - v1.z() * v2.y(),
+                    v1.z() * v2.x() - v1.x() * v2.z(),
+                    v1.x() * v2.y() - v1.y() * v2.x())
+    }
+
+    pub fn invert(&self) -> Vec3 {
+        Vec3::new(-self.x(), -self.y(), -self.z())
     }
 
     /**********************
@@ -298,6 +349,22 @@ mod test {
     }
 
     #[test]
+    fn test_vec_addas() {
+        let mut v1: Vec3 = Vec3::new(1.0, 2.0, 3.0);
+        v1 += Vec3::new(4.0, 6.0, 8.7);
+        assert_eq!(v1, Vec3::new(5.0, 8.0, 11.7));
+    }
+
+    #[test]
+    fn test_vec_addasr() {
+        let mut v1: Vec3 = Vec3::new(1.0, 2.0, 3.0);
+        let v2: Vec3 = Vec3::new(4.0, 6.0, 8.7);
+        v1 += &v2;
+        assert_eq!(v1, Vec3::new(5.0, 8.0, 11.7));
+        assert_eq!(v2, Vec3::new(4.0, 6.0, 8.7));
+    }
+
+    #[test]
     fn test_vec_sub() {
         assert_eq!(Vec3::new(1.0, 2.0, 3.0) - Vec3::new(4.0, 6.0, 8.0), Vec3::new(-3.0, -4.0, -5.0));
     }
@@ -315,6 +382,23 @@ mod test {
     #[test]
     fn test_vec_subrn() {
         assert_eq!(&Vec3::new(1.0, 2.0, 3.0) - Vec3::new(4.0, 6.0, 8.0), Vec3::new(-3.0, -4.0, -5.0));
+    }
+
+    #[test]
+    fn test_vec_subas() {
+        let mut v: Vec3 = Vec3::new(1.0, 2.0, 3.0);
+        let v2: Vec3 = Vec3::new(4.0, 6.0, 8.0);
+        v -= v2;
+        assert_eq!(v, Vec3::new(-3.0, -4.0, -5.0));
+    }
+
+    #[test]
+    fn test_vec_subasr() {
+        let mut v: Vec3 = Vec3::new(1.0, 2.0, 3.0);
+        let v2: Vec3 = Vec3::new(4.0, 6.0, 8.0);
+        v -= &v2;
+        assert_eq!(v, Vec3::new(-3.0, -4.0, -5.0));
+        assert_eq!(v2, Vec3::new(4.0, 6.0, 8.0));
     }
 
     #[test]
@@ -414,8 +498,29 @@ mod test {
     }
 
     #[test]
+    fn test_vec_normalized() {
+        let first_vector: Vec3 = Vec3::new(42.0, 42.0, -42.0);
+        let second_vector = first_vector.normalized();
+        assert_eq!(second_vector, Vec3::new(0.5773502691896257, 0.5773502691896257, -0.5773502691896257));
+        assert_eq!(first_vector, Vec3::new(42.0, 42.0, -42.0));
+    }
+
+    #[test]
     fn test_vec_lenght() {
         assert_eq!(Vec3::new(3.0, 4.0, 0.0).length(), 5.0);
+    }
+
+    #[test]
+    fn test_vec_lenght2() {
+        assert_eq!(Vec3::new(3.0, 4.0, 0.0).length2(), 25.0);
+    }
+
+    #[test]
+    fn test_vec_invert() {
+        let v1: Vec3 = Vec3::new(3.0, 4.0, 0.0);
+        let v2: Vec3 = v1.invert();
+        assert_eq!(v1, Vec3::new(3.0, 4.0, 0.0));
+        assert_eq!(v2, Vec3::new(-3.0, -4.0, 0.0));
     }
 
     #[test]
