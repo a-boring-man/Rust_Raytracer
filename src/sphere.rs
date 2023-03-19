@@ -3,8 +3,8 @@ use crate::{Ray, hittable::Hit_Record, hittable::Hittable, Vec3};
 type Point3 = Vec3;
 
 pub struct Sphere {
-    center: Point3,
-    radius: f64
+    pub center: Point3,
+    pub radius: f64
 }
 
 impl Hittable for Sphere {
