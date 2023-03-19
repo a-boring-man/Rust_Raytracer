@@ -1,4 +1,4 @@
-use crate::{Ray, hittable::Hit_Record, hittable::Hittable, Vec3};
+use crate::{Ray, hittable::HitRecord, hittable::Hittable, Vec3};
 
 type Point3 = Vec3;
 
@@ -8,7 +8,7 @@ pub struct Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, r: &Ray, tmin: f64, tmax: f64, hit_record: &mut Hit_Record) -> bool {
+    fn hit(&self, r: &Ray, tmin: f64, tmax: f64, hit_record: &mut HitRecord) -> bool {
         let oc: Vec3 = r.origin() - self.center.clone();
         let a: f64 = r.dir().length2();
         let half_b: f64 = Vec3::dot(&oc, &r.dir());
