@@ -26,6 +26,8 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_HEIGHT: u16 = 400;
     const IMAGE_WIDTH: u16 = (IMAGE_HEIGHT as f64 * ASPECT_RATIO) as u16;
+    const INV_IMAGE_HEIGHT_1: f64 = 1.0 / (IMAGE_HEIGHT - 1) as f64;
+    const INV_IMAGE_WIDTH_1: f64 = 1.0 / (IMAGE_WIDTH - 1) as f64;
 
     /* Camera cConstrains */
 
@@ -33,11 +35,11 @@ fn main() {
     const VIEWPORT_HEIGHT: f64 = 1.0;
     const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
 
-    let screen_distance: f64 = (VIEWPORT_WIDTH / 2.0) / (((FOV / 2.0) * PI / 180.0).tan());
+    let screen_distance: f64 = (VIEWPORT_WIDTH * 0.5) / (((FOV * 0.5) * PI / 180.0).tan());
     let origin: Point3 = Point3::new(0.0, 0.0, 0.0);
-    let horizontal: Vec3 = Vec3::new(VIEWPORT_WIDTH / 2.0, 0.0, 0.0);
-    let vertical: Vec3 = Vec3::new(0.0, VIEWPORT_HEIGHT / 2.0, 0.0);
-    let lower_left_corner = &(&origin - &horizontal) - &vertical - Vec3::new(0.0, 0.0, screen_distance);
+    let horizontal: Vec3 = Vec3::new(VIEWPORT_WIDTH * 0.5, 0.0, 0.0);
+    let vertical: Vec3 = Vec3::new(0.0, VIEWPORT_HEIGHT * 0.5, 0.0);
+    let depth: Vec3 = Vec3::new(0.0, 0.0, -screen_distance);
     
     /* Window thing */
 
@@ -45,7 +47,6 @@ fn main() {
     let video_subsystem = sdl_context.video().unwrap();
     let window = video_subsystem.window("super ray tracer", IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32)
         .position_centered()
-        .opengl()
         .build()
         .unwrap();
 
@@ -63,13 +64,13 @@ fn main() {
         }
         for j in 0..IMAGE_HEIGHT {
             //eprintln!("\rlines done: {} ", j);
-            let v: f64 = (1.0 - j as f64 / (IMAGE_HEIGHT - 1) as f64) as f64;
-            let vertical_factor = &vertical * 2.0 * v;
+            let v: f64 = (0.5 - j as f64 * INV_IMAGE_HEIGHT_1) * 2.0;
+            let vertical_factor = &vertical * v;
             for i in 0..IMAGE_WIDTH {
-                let u: f64 = i as f64 / (IMAGE_WIDTH - 1) as f64;
-                let r: Ray = Ray::new(origin.clone(), &(&(&lower_left_corner + &(&horizontal * 2.0 * u)) + &vertical_factor) - &origin);
+                let u: f64 = (i as f64 * INV_IMAGE_WIDTH_1 - 0.5) * 2.0;
+                let r: Ray = Ray::new(origin.clone(), &(&(&horizontal  * u) + &(&vertical_factor + &depth)) - &origin);
                 let pixel_color = ray_color(&r);
-                if i == 0 && j == 0 {
+                if i == 0 {
                     println!("{:?}", r);
                 }
 

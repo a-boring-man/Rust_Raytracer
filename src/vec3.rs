@@ -1,4 +1,4 @@
-use std::ops::{self, DivAssign};
+use std::ops::{self, DivAssign, MulAssign};
 
 /* The 3D vector class */
 #[derive(Clone, Debug, PartialEq)]
@@ -75,6 +75,20 @@ impl<'a> ops::Mul<f64> for &'a Vec3 {
         Vec3 { e: [ self.x() * rhs, self.y() * rhs, self.z() * rhs ] }
     }
 }
+impl<'a> ops::Mul<f64> for &'a mut Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Vec3 { e: [ self.x() * rhs, self.y() * rhs, self.z() * rhs ] }.clone()
+    }
+}
+impl<'a> MulAssign<f64> for &'a mut Vec3 {
+    fn mul_assign(&mut self, rhs: f64) {
+        self.e[0] *= rhs;
+        self.e[1] *= rhs;
+        self.e[2] *= rhs;
+    }
+}
 
 /* Implement the / operator for Vec3 */
 impl ops::Div for Vec3 {
@@ -109,6 +123,7 @@ impl<'a> ops::Div<f64> for &'a Vec3 {
 }
 impl<'a> DivAssign<f64> for &'a mut Vec3 {
     fn div_assign(&mut self, rhs: f64) {
+        let l = 1.0 / rhs;
         self.e[0] /= rhs;
         self.e[1] /= rhs;
         self.e[2] /= rhs;
@@ -148,7 +163,8 @@ impl Vec3 {
     }
 
     pub fn normalize(&mut self) {
-        self /= self.length();
+        let l = 1.0 / self.length();
+        *self = self.clone() * l;
     }
 
     /**********************
