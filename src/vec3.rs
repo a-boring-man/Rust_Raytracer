@@ -317,6 +317,16 @@ impl Vec3 {
         self.e[2]
     }
 
+    /**********************
+     * Setter section
+     **********************/
+
+    pub fn set(&mut self, x: f64, y: f64, z: f64) {
+        self.e[0] = x;
+        self.e[1] = y;
+        self.e[2] = z;
+    }
+
 }
 
 #[cfg(test)]
@@ -551,6 +561,13 @@ mod test {
     #[test]
     fn test_vec_getter_b() {
         assert_eq!(Vec3::new(3.0, 4.0, 0.0).b(), 0.0);
+    }
+
+    #[test]
+    fn test_vec_set() {
+        let mut v: Vec3 = Vec3::new(442.0, 52.67, 12.45);
+        v.set(32.6, 2415.5, 123.5);
+        assert_eq!(v, Vec3::new(32.6, 2415.5, 123.5));
     }
 
 }

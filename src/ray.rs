@@ -1,17 +1,19 @@
 /* Allow rust to know where to find the Vec3 class */
-use crate::vec3::Vec3;
+use crate::{vec3::Vec3, RAY_T_MAX};
 
 /* Aliasing */
-type Point = Vec3;
+type Point3 = Vec3;
 
 /* The Ray class */
 #[derive(PartialEq, Debug, Clone)]
 pub struct Ray {
-    origin: Point,
+    origin: Point3,
     direction: Vec3,
+    tmax: f64,
 }
 
 /* Implement basic function for the ray struct */
+#[allow(dead_code)]
 impl Ray {
 
     /**********************
@@ -19,16 +21,20 @@ impl Ray {
      **********************/
 
     /* Create a new ray using  as the origin point and  as directionnal vector */
-    pub fn new(start: Point, dir: Vec3) -> Ray {
-        Ray { origin: start, direction: dir }
+    pub fn new(start: Point3, dir: Vec3) -> Ray {
+        Ray { origin: start, direction: dir, tmax: RAY_T_MAX }
+    }
+
+    pub fn new_bound(start: Point3, dir: Vec3, max: f64) -> Ray {
+        Ray { origin: start, direction: dir, tmax: max }
     }
 
     /**********************
      * Methode section
      **********************/
 
-    pub fn at(&self, t: f64) -> Point {
-        &self.origin + &(&self.direction * t)
+    pub fn at(&self, t: f64) -> Point3 {
+        self.origin() + self.dir() * t
     }
 
     /**********************
@@ -36,7 +42,7 @@ impl Ray {
      **********************/
 
     /* Return the origin of the ray */
-    pub fn origin(&self) -> Point {
+    pub fn origin(&self) -> Point3 {
         self.origin.clone()
     }
 
@@ -49,11 +55,13 @@ impl Ray {
 
 #[cfg(test)]
 mod test {
+    use crate::RAY_T_MAX;
+
     use super::*;
 
     #[test]
     fn test_ray_construction() {
-        assert_eq!(Ray::new(Vec3::new(42.0, 21.4, 4.5), Vec3::new(52.0, 24.4, 4.53)), Ray {origin: Vec3::new(42.0, 21.4, 4.5), direction: Vec3::new(52.0, 24.4, 4.53)});
+        assert_eq!(Ray::new(Vec3::new(42.0, 21.4, 4.5), Vec3::new(52.0, 24.4, 4.53)), Ray {origin: Vec3::new(42.0, 21.4, 4.5), direction: Vec3::new(52.0, 24.4, 4.53), tmax: RAY_T_MAX});
     }
 
     #[test]

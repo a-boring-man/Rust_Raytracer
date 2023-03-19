@@ -18,6 +18,11 @@ use std::time::Duration;
 /* Aliasing */
 type Point3 = Vec3;
 
+/* Modulable Const */
+#[allow(dead_code)]
+const RAY_T_MIN: f64 = 0.0001;
+const RAY_T_MAX: f64 = 1.0e30;
+
 /* entry point of the program */
 fn main() {
     
@@ -29,12 +34,13 @@ fn main() {
     const INV_IMAGE_HEIGHT_1: f64 = 1.0 / (IMAGE_HEIGHT - 1) as f64;
     const INV_IMAGE_WIDTH_1: f64 = 1.0 / (IMAGE_WIDTH - 1) as f64;
 
-    /* Camera cConstrains */
+    /* Camera Constrains */
 
     const FOV: f64 = 140.0;
     const VIEWPORT_HEIGHT: f64 = 1.0;
     const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
 
+    /* Camera Initialization */
     let screen_distance: f64 = (VIEWPORT_WIDTH * 0.5) / (((FOV * 0.5) * PI / 180.0).tan());
     let origin: Point3 = Point3::new(0.0, 0.0, 0.0);
     let horizontal: Vec3 = Vec3::new(VIEWPORT_WIDTH * 0.5, 0.0, 0.0);
@@ -49,8 +55,9 @@ fn main() {
         .position_centered()
         .build()
         .unwrap();
-
     let mut canvas = window.into_canvas().build().unwrap();
+
+    /* Event Listening */
     let mut event_pump = sdl_context.event_pump().unwrap();
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -62,6 +69,8 @@ fn main() {
                 _ => {}
             }
         }
+
+        /* Main Loop */
         for j in 0..IMAGE_HEIGHT {
             //eprintln!("\rlines done: {} ", j);
             let v: f64 = (0.5 - j as f64 * INV_IMAGE_HEIGHT_1) * 2.0;
@@ -69,12 +78,10 @@ fn main() {
             for i in 0..IMAGE_WIDTH {
                 let u: f64 = (i as f64 * INV_IMAGE_WIDTH_1 - 0.5) * 2.0;
                 let r: Ray = Ray::new(origin.clone(), &horizontal * u + &vertical_factor + &depth - &origin);
-                let pixel_color = ray_color(&r);
-                if i == 0 {
-                    println!("{:?}", r);
-                }
 
+                let pixel_color = ray_color(&r);
                 let points = [Point::new(i as i32, j as i32); 1];
+
                 canvas.set_draw_color(Color::RGB((255.999 * pixel_color.r()) as u8, (255.999 * pixel_color.g()) as u8, (255.999 * pixel_color.b()) as u8));
                 canvas.draw_points(points.as_slice()).unwrap();
             }
