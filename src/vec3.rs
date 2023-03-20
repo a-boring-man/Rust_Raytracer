@@ -227,6 +227,15 @@ impl ops::DivAssign<f64> for Vec3 {
     }
 }
 
+/* Implement negate opperator for the vector struct */
+impl ops::Neg for &Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -> Self::Output{
+        Vec3::new(-self.x(), -self.y(), -self.z())
+    }
+}
+
 /* Implement basic function for the vector struct */
 impl Vec3 {
 
