@@ -1,10 +1,16 @@
-use crate::{Ray, hittable::HitRecord, hittable::Hittable, Vec3};
+use crate::{Ray, hittable::*, Vec3};
 
 type Point3 = Vec3;
 
 pub struct Sphere {
     pub center: Point3,
     pub radius: f64
+}
+
+impl Sphere {
+    pub fn new (center: Point3, radius: f64) -> Sphere {
+        Sphere { center, radius }
+    }
 }
 
 impl Hittable for Sphere {

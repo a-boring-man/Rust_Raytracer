@@ -1,24 +1,12 @@
+use crate::{RAY_T_MIN, RAY_T_MAX};
+use crate::hittable::{HitRecord, Hittable};
+use crate::hittablelist::Hittablelist;
 /* Allow rust to know where to find the Vec3 class */
 use crate::vec3::Vec3;
 use crate::ray::Ray;
 
 /* Aliasing type make code intention more readable */
 type Color = Vec3;
-type Point3 = Vec3;
-
-pub fn hit_sphere(sphere_center: &Point3, radius: f64, r: &Ray) -> f64 {
-    let oc: Vec3 = r.origin() - sphere_center;
-    let a: f64 = r.dir().length2();
-    let half_b: f64 = Vec3::dot(&oc, &r.dir());
-    let c: f64 = oc.length2() - radius * radius;
-    let discriminant: f64 = half_b * half_b - a * c;
-    if discriminant < 0.0 {
-        return -1.0;
-    }
-    else {
-        return (-half_b - discriminant.sqrt()) / a;
-    }
-}
 
 pub fn background_color(r: &Ray) -> Color {
     let mut pixel_color: Color = Color::new(0.0, 0.0, 0.0);
@@ -30,7 +18,7 @@ pub fn background_color(r: &Ray) -> Color {
         pixel_color.e[1] = (r.dir().y() + 1.0) / 2.0;
     }
     if r.dir().z().abs() >= r.dir().x().abs() && r.dir().z().abs() >= r.dir().y().abs() {
-        pixel_color.e[2] = 1.0 - ((r.dir().z() + 1.0) / 2.0);
+        pixel_color.e[2] = ((r.dir().z() + 1.0) / 2.0);
     }
     pixel_color
 }
@@ -45,18 +33,16 @@ pub fn debug_color(r: &Vec3) -> Color {
         pixel_color.e[1] = (r.y() + 1.0) / 2.0;
     }
     if r.z().abs() >= r.x().abs() && r.z().abs() >= r.y().abs() {
-        pixel_color.e[2] = 1.0 - ((r.z() + 1.0) / 2.0);
+        pixel_color.e[2] = ((r.z() + 1.0) / 2.0);
     }
     pixel_color
 }
 
-pub fn ray_color(r: &Ray) -> Color {
+pub fn ray_color(r: &Ray, world: &Hittablelist) -> Color {
+    let mut hit_record: HitRecord = HitRecord::new();
 
-    let sphere_collision: f64 = hit_sphere(&Point3::new(0.0, 0.0, 1.0), 0.5, r);
-    if sphere_collision > 0.0 {
-        let n: Vec3 = (r.at(sphere_collision) - Vec3::new(0.0, 0.0, 1.0)).normalized();
-        let pixel_color = debug_color(&n);
-        return pixel_color;
+    if world.hit(r, RAY_T_MIN, RAY_T_MAX, &mut hit_record) {
+        return debug_color(&hit_record.normal);
     }
     else {
         let pixel_color = background_color(r);

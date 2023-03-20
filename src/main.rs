@@ -12,6 +12,8 @@ use vec3::Vec3;
 use ray::Ray;
 use std::f64::consts::PI;
 use crate::color_rendering::ray_color;
+use crate::hittablelist::*;
+use crate::sphere::Sphere;
 use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -39,16 +41,21 @@ fn main() {
 
     /* Camera Constrains */
 
-    const FOV: f64 = 140.0;
+    const FOV: f64 = 95.0;
     const VIEWPORT_HEIGHT: f64 = 1.0;
     const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
 
     /* Camera Initialization */
-    let screen_distance: f64 = (VIEWPORT_WIDTH * 0.5) / (((FOV * 0.5) * PI / 180.0).tan());
+    let screen_distance: f64 = (VIEWPORT_WIDTH * 0.5) / (degree_to_rad(FOV * 0.5).tan());
     let origin: Point3 = Point3::new(0.0, 0.0, 0.0);
     let horizontal: Vec3 = Vec3::new(-VIEWPORT_WIDTH * 0.5, 0.0, 0.0);
     let vertical: Vec3 = Vec3::new(0.0, VIEWPORT_HEIGHT * 0.5, 0.0);
     let depth: Vec3 = Vec3::new(0.0, 0.0, screen_distance);
+
+    /* Building the world */
+    let mut world: Hittablelist = Hittablelist::new();
+    world.add(Box::new(Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5)));
+    world.add(Box::new(Sphere::new(Vec3::new(-2.0, 0.0, 3.0), 1.0)));
     
     /* Window thing */
 
@@ -82,7 +89,7 @@ fn main() {
                 let u: f64 = (i as f64 * INV_IMAGE_WIDTH_1 - 0.5) * 2.0;
                 let r: Ray = Ray::new(origin.clone(), &horizontal * u + &vertical_factor + &depth - &origin);
 
-                let pixel_color = ray_color(&r);
+                let pixel_color = ray_color(&r, &world);
                 let points = [Point::new(i as i32, j as i32); 1];
 
                 canvas.set_draw_color(Color::RGB((255.999 * pixel_color.r()) as u8, (255.999 * pixel_color.g()) as u8, (255.999 * pixel_color.b()) as u8));
@@ -95,4 +102,8 @@ fn main() {
     }
 
     eprintln!("\nDone.\n");
+}
+
+pub fn degree_to_rad (d: f64) -> f64 {
+    d * PI / 180.0
 }
