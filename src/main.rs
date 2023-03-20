@@ -1,10 +1,11 @@
 /* List of includes */
 extern crate sdl2;
 mod vec3;
-mod color_rendering;
 mod ray;
 mod hittable;
+mod hittablelist;
 mod sphere;
+mod color_rendering;
 
 /* Shortcut */
 use vec3::Vec3;

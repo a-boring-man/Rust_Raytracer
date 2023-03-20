@@ -28,7 +28,8 @@ impl Hittable for Sphere {
 
         hit_record.t = root;
         hit_record.p = r.at(root);
-        hit_record.normal = (hit_record.p.clone() - self.center.clone()) / self.radius;
+        let normal: Vec3 = (hit_record.p.clone() - self.center.clone()) / self.radius;
+        hit_record.set_face_normal(r, &normal);
         return true;
     }
 }
