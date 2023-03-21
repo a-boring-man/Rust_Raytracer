@@ -49,3 +49,7 @@ pub fn ray_color(r: &Ray, world: &Hittablelist) -> Color {
         return pixel_color;
     }
 }
+
+pub fn sample_scalling(pixel_color: &mut Color, sample_size: u8) {
+    *pixel_color /= sample_size as f64;
+}
