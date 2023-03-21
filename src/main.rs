@@ -6,14 +6,15 @@ mod hittable;
 mod hittablelist;
 mod sphere;
 mod color_rendering;
+mod utils;
 
 /* Shortcut */
 use vec3::Vec3;
 use ray::Ray;
-use std::f64::consts::PI;
 use crate::color_rendering::ray_color;
 use crate::hittablelist::*;
 use crate::sphere::Sphere;
+use crate::utils::degree_to_rad;
 use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -24,7 +25,6 @@ use std::time::Duration;
 type Point3 = Vec3;
 
 /* Modulable Const */
-#[allow(dead_code)]
 const RAY_T_MIN: f64 = 0.0001;
 const RAY_T_MAX: f64 = 1.0e30;
 
@@ -53,8 +53,7 @@ fn main() {
     let depth: Vec3 = Vec3::new(0.0, 0.0, screen_distance);
 
     /* Building the world */
-    let mut world: Hittablelist = Hittablelist::new();
-    world.add(Box::new(Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5)));
+    let mut world: Hittablelist = Hittablelist::new_add(Box::new(Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5)));
     world.add(Box::new(Sphere::new(Vec3::new(-2.0, 0.0, 3.0), 1.0)));
     
     /* Window thing */
@@ -102,8 +101,4 @@ fn main() {
     }
 
     eprintln!("\nDone.\n");
-}
-
-pub fn degree_to_rad (d: f64) -> f64 {
-    d * PI / 180.0
 }

@@ -1,4 +1,5 @@
 use std::ops;
+use crate::utils::sqr;
 
 /* The 3D vector class */
 #[derive(Clone, Debug, PartialEq)]
@@ -6,8 +7,106 @@ pub struct Vec3 {
     pub e: [f64;3]
 }
 
-pub fn sqr(n: f64) -> f64 {
-    n * n
+/* Implement basic function for the vector struct */
+impl Vec3 {
+
+    /**********************
+     * Creation section
+     **********************/
+
+    /* Create a new vector with initialized value */
+    pub fn new(e0: f64, e1: f64, e2: f64) -> Vec3 {
+        Vec3 { e: [e0, e1, e2] }
+    }
+
+    /**********************
+     * Methode section
+     **********************/
+     
+     /* Static Methode */
+
+    pub fn unit_vec(v: &Vec3) -> Vec3 {
+        v / v.length()
+    }
+    
+    /* Instance Methode */
+    
+    pub fn length2(&self) -> f64 {
+        sqr(self.x()) + sqr(self.y()) + sqr(self.z())
+    }
+    
+    pub fn length(&self) -> f64 {
+        self.length2().sqrt()
+    }
+
+    pub fn normalize(&mut self) -> f64 {
+        let l: f64 = self.length();
+        *self /= l;
+        l
+    }
+
+    pub fn normalized(&self) -> Vec3 {
+        let mut v: Vec3 = self.clone();
+        v.normalize();
+        v
+    }
+
+    pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
+        v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()
+    }
+    
+    pub fn cross(v1: &Vec3, v2: &Vec3) -> Vec3 {
+        Vec3::new(  v1.y() * v2.z() - v1.z() * v2.y(),
+                    v1.z() * v2.x() - v1.x() * v2.z(),
+                    v1.x() * v2.y() - v1.y() * v2.x())
+    }
+
+    pub fn invert(&self) -> Vec3 {
+        Vec3::new(-self.x(), -self.y(), -self.z())
+    }
+
+    /**********************
+     * Getter section
+     **********************/
+     
+     /* Return the first vector component */
+     pub fn x(&self) -> f64 {
+        self.e[0]
+    }
+    /* Return the second vector component */
+    pub fn y(&self) -> f64 {
+        self.e[1]
+    }
+    /* Return the third vector component */
+    pub fn z(&self) -> f64 {
+        self.e[2]
+    }
+    
+    /* Color version */
+    
+    /* Return the first vector component */
+    pub fn r(&self) -> f64 {
+        self.e[0]
+    }
+    /* Return the second vector component */
+    pub fn g(&self) -> f64 {
+        self.e[1]
+    }
+    /* Return the third vector component */
+    pub fn b(&self) -> f64 {
+        self.e[2]
+    }
+
+    /**********************
+     * Setter section
+     **********************/
+     
+     pub fn set(&mut self, x: f64, y: f64, z: f64) {
+        self.e[0] = x;
+        self.e[1] = y;
+        self.e[2] = z;
+    }
+
 }
 
 /**********************
@@ -236,108 +335,6 @@ impl ops::Neg for &Vec3 {
     }
 }
 
-/* Implement basic function for the vector struct */
-impl Vec3 {
-
-    /**********************
-     * Creation section
-     **********************/
-
-    /* Create a new vector with initialized value */
-    pub fn new(e0: f64, e1: f64, e2: f64) -> Vec3 {
-        Vec3 { e: [e0, e1, e2] }
-    }
-
-    /**********************
-     * Methode section
-     **********************/
-
-    /* Static Methode */
-
-    pub fn unit_vec(v: &Vec3) -> Vec3 {
-        v / v.length()
-    }
-    
-    /* Instance Methode */
-
-    pub fn length2(&self) -> f64 {
-        sqr(self.x()) + sqr(self.y()) + sqr(self.z())
-    }
-
-    pub fn length(&self) -> f64 {
-        self.length2().sqrt()
-    }
-
-    pub fn normalize(&mut self) -> f64 {
-        let l: f64 = self.length();
-        *self /= l;
-        l
-    }
-
-    pub fn normalized(&self) -> Vec3 {
-        let mut v: Vec3 = self.clone();
-        v.normalize();
-        v
-    }
-
-    pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
-        v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()
-    }
-
-    pub fn cross(v1: &Vec3, v2: &Vec3) -> Vec3 {
-        Vec3::new(  v1.y() * v2.z() - v1.z() * v2.y(),
-                    v1.z() * v2.x() - v1.x() * v2.z(),
-                    v1.x() * v2.y() - v1.y() * v2.x())
-    }
-
-    pub fn invert(&self) -> Vec3 {
-        Vec3::new(-self.x(), -self.y(), -self.z())
-    }
-
-    /**********************
-     * Getter section
-     **********************/
-
-    /* Return the first vector component */
-    pub fn x(&self) -> f64 {
-        self.e[0]
-    }
-    /* Return the second vector component */
-    pub fn y(&self) -> f64 {
-        self.e[1]
-    }
-    /* Return the third vector component */
-    pub fn z(&self) -> f64 {
-        self.e[2]
-    }
-
-    /* Color version */
-
-    /* Return the first vector component */
-    pub fn r(&self) -> f64 {
-        self.e[0]
-    }
-    /* Return the second vector component */
-    pub fn g(&self) -> f64 {
-        self.e[1]
-    }
-    /* Return the third vector component */
-    pub fn b(&self) -> f64 {
-        self.e[2]
-    }
-
-    /**********************
-     * Setter section
-     **********************/
-
-    pub fn set(&mut self, x: f64, y: f64, z: f64) {
-        self.e[0] = x;
-        self.e[1] = y;
-        self.e[2] = z;
-    }
-
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -346,12 +343,12 @@ mod test {
     fn test_vec_construction() {
         assert_eq!(Vec3::new(42.0, 21.4, 4.5), Vec3 {e: [42.0, 21.4, 4.5]});
     }
-
+    
     #[test]
     fn test_vec_add() {
         assert_eq!(Vec3::new(1.0, 2.0, 3.0) + Vec3::new(4.0, 6.0, 8.7), Vec3::new(5.0, 8.0, 11.7));
     }
-
+    
     #[test]
     fn test_vec_addrr() {
         assert_eq!(&Vec3::new(1.0, 2.0, 3.0) + &Vec3::new(4.0, 6.0, 8.7), Vec3::new(5.0, 8.0, 11.7));

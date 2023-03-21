@@ -5,6 +5,7 @@ pub struct Hittablelist {
 	list: Vec<Box<dyn Hittable>>,
 }
 
+#[allow(dead_code)]
 impl Hittablelist {
 
 	pub fn new() -> Hittablelist {

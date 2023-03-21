@@ -1,7 +1,7 @@
+/* Allow rust to know where to find the Vec3 class and everything else needed*/
 use crate::{RAY_T_MIN, RAY_T_MAX};
-use crate::hittable::{HitRecord, Hittable};
+use crate::hittable::*;
 use crate::hittablelist::Hittablelist;
-/* Allow rust to know where to find the Vec3 class */
 use crate::vec3::Vec3;
 use crate::ray::Ray;
 
@@ -18,7 +18,7 @@ pub fn background_color(r: &Ray) -> Color {
         pixel_color.e[1] = (r.dir().y() + 1.0) / 2.0;
     }
     if r.dir().z().abs() >= r.dir().x().abs() && r.dir().z().abs() >= r.dir().y().abs() {
-        pixel_color.e[2] = ((r.dir().z() + 1.0) / 2.0);
+        pixel_color.e[2] = (r.dir().z() + 1.0) / 2.0;
     }
     pixel_color
 }
@@ -33,7 +33,7 @@ pub fn debug_color(r: &Vec3) -> Color {
         pixel_color.e[1] = (r.y() + 1.0) / 2.0;
     }
     if r.z().abs() >= r.x().abs() && r.z().abs() >= r.y().abs() {
-        pixel_color.e[2] = ((r.z() + 1.0) / 2.0);
+        pixel_color.e[2] = (r.z() + 1.0) / 2.0;
     }
     pixel_color
 }

@@ -24,8 +24,5 @@ impl HitRecord {
 }
 
 pub trait Hittable {
-    #[allow(dead_code)]
-    fn hit(&self, r: &Ray, tmin: f64, tmax: f64, hit_record: &mut HitRecord) -> bool {
-        true
-    }
+    fn hit(&self, r: &Ray, tmin: f64, tmax: f64, hit_record: &mut HitRecord) -> bool;
 }
