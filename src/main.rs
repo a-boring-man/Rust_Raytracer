@@ -7,6 +7,7 @@ mod hittablelist;
 mod sphere;
 mod color_rendering;
 mod utils;
+mod camera;
 
 /* Shortcut */
 use vec3::Vec3;
