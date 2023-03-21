@@ -16,7 +16,7 @@ use crate::color_rendering::*;
 use crate::hittablelist::*;
 use crate::sphere::Sphere;
 use crate::camera::Camera;
-use crate::utils::random_number;
+use crate::utils::{random_number, clamp};
 use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -44,7 +44,8 @@ fn main() {
     /* Camera Initialization */
 
     let camera = Camera::new(95.0);
-    let sample_size = 5;
+    let sample_size = 100;
+    let max_depth = 50;
 
     /* Building the world */
     let mut world: Hittablelist = Hittablelist::new_add(Box::new(Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5)));
@@ -78,17 +79,20 @@ fn main() {
             eprintln!("\rlines to be done: {} ", IMAGE_HEIGHT - j);
             for i in 0..IMAGE_WIDTH {
                 let mut pixel_color: Color3 = Color3::new(0.0, 0.0, 0.0);
-                for _s in 0..=sample_size {
+                for _ in 0..=sample_size {
                     let u: f64 = ((i as f64 + random_number()) * INV_IMAGE_WIDTH_1 - 0.5 ) * 2.0;
                     let v: f64 = (0.5 - (j as f64 + random_number()) * INV_IMAGE_HEIGHT_1 ) * 2.0;
                     let r: Ray = camera.get_ray(u, v);
     
-                    pixel_color += ray_color(&r, &world);
+                    pixel_color += ray_color(&r, &world, max_depth);
                 }
-                let points = [Point::new(i as i32, j as i32); 1];
                 sample_scalling(&mut pixel_color, sample_size);
-
-                canvas.set_draw_color(Color::RGB((255.999 * pixel_color.r()) as u8, (255.999 * pixel_color.g()) as u8, (255.999 * pixel_color.b()) as u8));
+                pixel_color = gamma_scaling(&pixel_color);
+                
+                let points = [Point::new(i as i32, j as i32); 1];
+                canvas.set_draw_color(Color::RGB(   (256.0 * clamp(pixel_color.r(), 0.0, 0.999)) as u8,
+                                                    (256.0 * clamp(pixel_color.g(), 0.0, 0.999)) as u8,
+                                                    (256.0 * clamp(pixel_color.b(), 0.0, 0.999)) as u8));
                 canvas.draw_points(points.as_slice()).unwrap();
             }
         }

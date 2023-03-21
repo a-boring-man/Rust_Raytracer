@@ -1,5 +1,6 @@
 use std::ops;
 use crate::utils::sqr;
+use crate::utils::{random_number, random};
 
 /* The 3D vector class */
 #[derive(Clone, Debug, PartialEq)]
@@ -24,9 +25,27 @@ impl Vec3 {
      **********************/
      
      /* Static Methode */
+     
+     pub fn unit_vec(v: &Vec3) -> Vec3 {
+         v / v.length()
+    }
+    
+    pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
+        v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()
+    }
+    
+    pub fn cross(v1: &Vec3, v2: &Vec3) -> Vec3 {
+        Vec3::new(  v1.y() * v2.z() - v1.z() * v2.y(),
+                    v1.z() * v2.x() - v1.x() * v2.z(),
+                    v1.x() * v2.y() - v1.y() * v2.x())
+    }
 
-    pub fn unit_vec(v: &Vec3) -> Vec3 {
-        v / v.length()
+    pub fn vec_random() -> Vec3 {
+        Vec3::new(random_number(), random_number(), random_number())
+    }
+
+    pub fn vec_random_long(min: f64, max: f64) -> Vec3 {
+        Vec3::new(random(min, max), random(min, max), random(min, max))
     }
     
     /* Instance Methode */
@@ -49,16 +68,6 @@ impl Vec3 {
         let mut v: Vec3 = self.clone();
         v.normalize();
         v
-    }
-
-    pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
-        v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z()
-    }
-    
-    pub fn cross(v1: &Vec3, v2: &Vec3) -> Vec3 {
-        Vec3::new(  v1.y() * v2.z() - v1.z() * v2.y(),
-                    v1.z() * v2.x() - v1.x() * v2.z(),
-                    v1.x() * v2.y() - v1.y() * v2.x())
     }
 
     pub fn invert(&self) -> Vec3 {
