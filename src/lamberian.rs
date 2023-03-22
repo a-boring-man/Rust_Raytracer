@@ -17,7 +17,7 @@ impl Lamberian {
 }
 
 impl Materiable for Lamberian {
-    fn scatter(&self, r_in: &Ray, hit_record: &HitRecord, atenuation: &mut Color3, r_out: &mut Ray) -> bool {
+    fn scatter(&self, _r_in: &Ray, hit_record: &HitRecord, atenuation: &mut Color3, r_out: &mut Ray) -> bool {
         let mut scatter_direction: Vec3 = &hit_record.normal + random_unit_vector();
 
         if scatter_direction.near_zero() {

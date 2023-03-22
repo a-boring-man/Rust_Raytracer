@@ -5,7 +5,6 @@ use crate::RAY_T_MAX;
 use crate::material::Materiable;
 
 type Point3 = Vec3;
-type Color3 = Vec3;
 
 pub struct HitRecord {
     pub p: Point3,

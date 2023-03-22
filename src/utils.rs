@@ -34,11 +34,11 @@ pub fn random_unit_sphere() -> Vec3 {
     }
     return p;
 }
-#[allow(dead_code)]
+
 pub fn random_unit_vector() -> Vec3 {
     random_unit_sphere().normalized()
 }
-
+#[allow(dead_code)]
 pub fn random_in_hemisphere(n: &Vec3) -> Vec3 {
     let in_unit_sphere = random_unit_sphere();
     if Vec3::dot(&in_unit_sphere, n) > 0.0 {

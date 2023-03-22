@@ -1,4 +1,3 @@
-use std::rc::Rc;
 /* Allow rust to know where to find the Vec3 class and everything else needed*/
 use crate::{RAY_T_MIN, RAY_T_MAX};
 use crate::hittable::*;
