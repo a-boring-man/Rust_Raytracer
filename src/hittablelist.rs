@@ -1,8 +1,9 @@
 use crate::hittable::*;
 use crate::Ray;
+use std::rc::Rc;
 
 pub struct Hittablelist {
-	list: Vec<Box<dyn Hittable>>,
+	list: Vec<Rc<dyn Hittable>>,
 }
 
 #[allow(dead_code)]
@@ -12,7 +13,7 @@ impl Hittablelist {
 		Hittablelist {list: Vec::new()}
 	}
 
-	pub fn new_add<T: Hittable + 'static>(object: Box<T>) -> Hittablelist {
+	pub fn new_add<T: Hittable + 'static>(object: Rc<T>) -> Hittablelist {
 		Hittablelist { list: vec![object]}
 	}
 
@@ -20,7 +21,7 @@ impl Hittablelist {
 		self.list.clear();
 	}
 
-	pub fn add<T: Hittable + 'static>(&mut self, object: Box<T>) {
+	pub fn add<T: Hittable + 'static>(&mut self, object: Rc<T>) {
 		self.list.push(object);
 	}
 }

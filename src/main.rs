@@ -22,7 +22,7 @@ use crate::camera::Camera;
 use crate::utils::{random_number, clamp};
 use crate::lamberian::*;
 use crate::metal::*;
-use crate::material::*;
+use std::rc::Rc;
 use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -56,16 +56,16 @@ fn main() {
     /* Building the world */
     let mut world: Hittablelist = Hittablelist::new();
 
-    let material1 = Box::new(Lamberian::new(&Color3::new(0.8, 0.8, 0.0)));
-    let material2 = Box::new(Lamberian::new(&Color3::new(0.7, 0.3, 0.3)));
-    let material3 = Box::new(Metal::new(&Color3::new(0.8, 0.8, 0.8)));
-    let material4 = Box::new(Metal::new(&Color3::new(0.8, 0.6, 0.2)));
+    let material1 = Rc::new(Lamberian::new(&Color3::new(0.8, 0.8, 0.0)));
+    let material2 = Rc::new(Lamberian::new(&Color3::new(0.7, 0.3, 0.3)));
+    let material3 = Rc::new(Metal::new(&Color3::new(0.8, 0.8, 0.8)));
+    let material4 = Rc::new(Metal::new(&Color3::new(0.8, 0.6, 0.2)));
 
 
-    world.add(Box::new(Sphere::new(Vec3::new(0.0, -100.5, 1.0), 100.0, material1)));
-    world.add(Box::new(Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5, material2)));
-    world.add(Box::new(Sphere::new(Vec3::new(1.0, 0.0, 1.0), 0.5, material3)));
-    world.add(Box::new(Sphere::new(Vec3::new(-1.0, 0.0, 1.0), 0.5, material4)));
+    world.add(Rc::new(Sphere::new(Vec3::new(0.0, -100.5, 1.0), 100.0, material1)));
+    world.add(Rc::new(Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5, material2)));
+    world.add(Rc::new(Sphere::new(Vec3::new(1.0, 0.0, 1.0), 0.5, material3)));
+    world.add(Rc::new(Sphere::new(Vec3::new(-1.0, 0.0, 1.0), 0.5, material4)));
     
     /* Window thing */
 

@@ -17,9 +17,9 @@ impl Metal {
 
 impl Materiable for Metal {
     fn scatter(&self, r_in: &Ray, hit_record: &HitRecord, atenuation: &mut crate::Color3, r_out: &mut Ray) -> bool {
-        let reflected: Vec3 = Vec3::reflect(&r_in.dir(), &hit_record.normal);
-        let scattered_ray: Ray = Ray::new(hit_record.p.clone(), reflected);
+        let reflected: Vec3 = Vec3::reflect(&r_in.dir().normalized(), &hit_record.normal);
+        *r_out = Ray::new(hit_record.p.clone(), reflected);
         *atenuation = self.albedo.clone();
-        Vec3::dot(&scattered_ray.dir(), &hit_record.normal) > 0.0
+        Vec3::dot(&r_out.dir(), &hit_record.normal) > 0.0
     }
 }

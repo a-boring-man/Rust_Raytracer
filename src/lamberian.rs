@@ -24,7 +24,7 @@ impl Materiable for Lamberian {
             scatter_direction = hit_record.normal.clone();
         }
 
-        let scattered_ray: Ray = Ray::new(hit_record.p.clone(), scatter_direction);
+        *r_out = Ray::new(hit_record.p.clone(), scatter_direction);
         *atenuation = self.albedo.clone();
         true
     }
