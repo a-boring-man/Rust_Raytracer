@@ -27,15 +27,15 @@ impl Hittablelist {
 
 impl Hittable for Hittablelist {
 	fn hit(&self, r: &Ray, tmin: f64, tmax: f64, record: &mut HitRecord) -> bool {
-		let mut tmp_record: HitRecord = HitRecord::new();
 		let mut hit_anything: bool = false;
 		let mut closest_so_far: f64 = tmax;
-
+		
 		for object in &self.list {
+			let mut tmp_record: HitRecord = HitRecord::new();
 			if object.hit(r, tmin, closest_so_far, &mut tmp_record) {
 				hit_anything = true;
 				closest_so_far = tmp_record.t;
-				*record = tmp_record.clone();
+				*record = tmp_record;
 			}
 		}
 		return hit_anything;

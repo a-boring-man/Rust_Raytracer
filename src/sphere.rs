@@ -1,15 +1,16 @@
-use crate::{Ray, hittable::*, Vec3};
+use crate::{Ray, hittable::*, Vec3, material::Materiable};
 
 type Point3 = Vec3;
 
 pub struct Sphere {
     pub center: Point3,
-    pub radius: f64
+    pub radius: f64,
+    pub material: Box<dyn Materiable>
 }
 
 impl Sphere {
-    pub fn new (center: Point3, radius: f64) -> Sphere {
-        Sphere { center, radius }
+    pub fn new (center: Point3, radius: f64, material: Box<dyn Materiable> ) -> Sphere {
+        Sphere { center, radius, material }
     }
 }
 
@@ -36,6 +37,7 @@ impl Hittable for Sphere {
         hit_record.p = r.at(root);
         let normal: Vec3 = (hit_record.p.clone() - self.center.clone()) / self.radius;
         hit_record.set_face_normal(r, &normal);
+        hit_record.mat_ptr = Some(Box::new(self.material.as_ref().clone()));
         return true;
     }
 }

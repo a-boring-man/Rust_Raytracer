@@ -1,4 +1,5 @@
 use std::ops;
+use crate::RAY_T_MIN;
 use crate::utils::sqr;
 use crate::utils::{random_number, random};
 
@@ -47,6 +48,10 @@ impl Vec3 {
     pub fn vec_random_long(min: f64, max: f64) -> Vec3 {
         Vec3::new(random(min, max), random(min, max), random(min, max))
     }
+
+    pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+        v - 2.0 * Vec3::dot(v, n) * n
+    }
     
     /* Instance Methode */
     
@@ -68,6 +73,10 @@ impl Vec3 {
         let mut v: Vec3 = self.clone();
         v.normalize();
         v
+    }
+
+    pub fn near_zero(&self) -> bool {
+        self.e[0].abs() < RAY_T_MIN && self.e[1].abs() < RAY_T_MIN &&self.e[2].abs() < RAY_T_MIN
     }
 
     pub fn invert(&self) -> Vec3 {

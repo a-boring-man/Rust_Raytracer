@@ -1,12 +1,14 @@
 use crate::Ray;
 use crate::Vec3;
 use crate::RAY_T_MAX;
+use crate::material::Materiable;
 
 type Point3 = Vec3;
-#[derive(Clone)]
+
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
+    pub mat_ptr: Option<Box<dyn Materiable>>,
     pub t: f64,
     pub front_face: bool
 }
@@ -14,7 +16,7 @@ pub struct HitRecord {
 impl HitRecord {
 
     pub fn new() -> HitRecord{
-        HitRecord { p: (Vec3::new(0.0, 0.0, 0.0)), normal: (Vec3::new(0.0, 0.0, 0.0)), t: (RAY_T_MAX), front_face: (true) }
+        HitRecord { p: (Vec3::new(0.0, 0.0, 0.0)), normal: (Vec3::new(0.0, 0.0, 0.0)), mat_ptr: None, t: (RAY_T_MAX), front_face: (true) }
     }
 
     pub fn set_face_normal(&mut self, r: &Ray, outward_normal: &Vec3) {

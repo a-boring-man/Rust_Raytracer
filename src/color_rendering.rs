@@ -47,8 +47,16 @@ pub fn ray_color(r: &Ray, world: &Hittablelist, depth: i16) -> Color {
         return Color::new(0.0, 0.0, 0.0);
     }
     if world.hit(r, RAY_T_MIN, RAY_T_MAX, &mut hit_record) {
-        let target: Vec3 = &hit_record.p + &hit_record.normal + random_in_hemisphere(&hit_record.normal);
-        return 0.5 * ray_color(&Ray::new(hit_record.p.clone(), &target - &hit_record.p), world, depth - 1);
+
+        let mut scattered_ray: Ray = Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 0.0));
+        let mut attenuation: Color = Vec3::new(0.0, 0.0, 0.0);
+
+        if let Some(mat) = hit_record.mat_ptr.as_ref() {
+            if mat.scatter(r, &hit_record, &mut attenuation, &mut scattered_ray) {
+                return attenuation * ray_color(&scattered_ray, world, depth - 1);
+            }
+        }
+        return Color::new(0.0, 0.0, 0.0);
         // return debug_color(&hit_record.normal);
     }
     else {
