@@ -9,18 +9,21 @@ use crate::ray::Ray;
 type Color = Vec3;
 
 pub fn background_color(r: &Ray) -> Color {
-    let mut pixel_color: Color = Color::new(0.0, 0.0, 0.0);
+    let unit_direction: Color = r.dir().normalized();
+    let t: f64 = 0.5 * (unit_direction.y() + 1.0);
+    (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
+    // let mut pixel_color: Color = Color::new(0.0, 0.0, 0.0);
 
-    if r.dir().x().abs() >= r.dir().y().abs() && r.dir().x().abs() >= r.dir().z().abs() {
-        pixel_color.e[0] = (r.dir().x() + 1.0) / 2.0;
-    }
-    if r.dir().y().abs() >= r.dir().x().abs() && r.dir().y().abs() >= r.dir().z().abs() {
-        pixel_color.e[1] = (r.dir().y() + 1.0) / 2.0;
-    }
-    if r.dir().z().abs() >= r.dir().x().abs() && r.dir().z().abs() >= r.dir().y().abs() {
-        pixel_color.e[2] = (-1.0 * r.dir().z() + 1.0) / 2.0;
-    }
-    pixel_color
+    // if r.dir().x().abs() >= r.dir().y().abs() && r.dir().x().abs() >= r.dir().z().abs() {
+    //     pixel_color.e[0] = (r.dir().x() + 1.0) / 2.0;
+    // }
+    // if r.dir().y().abs() >= r.dir().x().abs() && r.dir().y().abs() >= r.dir().z().abs() {
+    //     pixel_color.e[1] = (r.dir().y() + 1.0) / 2.0;
+    // }
+    // if r.dir().z().abs() >= r.dir().x().abs() && r.dir().z().abs() >= r.dir().y().abs() {
+    //     pixel_color.e[2] = (-1.0 * r.dir().z() + 1.0) / 2.0;
+    // }
+    // pixel_color
 }
 
 #[allow(dead_code)]
